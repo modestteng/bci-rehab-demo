@@ -1,0 +1,12 @@
+* text=auto
+
+# gradlew 是 shell 脚本，被转成 CRLF 后在 Linux/macOS 上会直接报 bad interpreter
+gradlew text eol=lf
+*.sh text eol=lf
+*.bat text eol=crlf
+
+*.png binary
+*.jpg binary
+*.jar binary
+*.apk binary
+*.jks binary

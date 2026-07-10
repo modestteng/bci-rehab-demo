@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">脑机康复闭环演示</string>
+    <string name="title_activity_main">脑机康复闭环演示</string>
+    <string name="package_name">com.bci.rehab.demo</string>
+    <string name="custom_url_scheme">com.bci.rehab.demo</string>
+</resources>

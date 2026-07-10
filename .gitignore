@@ -1,0 +1,20 @@
+node_modules/
+dist/
+dist-single/
+release/
+*.tsbuildinfo
+.DS_Store
+
+# 本地工具产生的截图与会话数据，不进公开仓库
+.claude-local/
+.claude/
+
+# Android / Capacitor
+android/build/
+android/app/build/
+android/.gradle/
+android/local.properties
+android/keystore.properties
+android/capacitor-cordova-android-plugins/build/
+*.jks
+*.keystore
