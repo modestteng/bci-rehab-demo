@@ -30,7 +30,7 @@ export const latencyBudget: readonly LatencySegment[] = [
     ms: 64,
     wiredMs: 32,
     tone: 'cyan',
-    detail: '250Hz × 16 样本/包 = 恰好 64ms 的包周期；有线可用 8 样本/包降到 32ms',
+    detail: '250Hz × 16 样本/包，对应 64ms 的包周期；有线方案可采用 8 样本/包，降至 32ms',
     wireless: true,
   },
   {
@@ -57,7 +57,7 @@ export const latencyBudget: readonly LatencySegment[] = [
     ms: 11,
     wiredMs: 11,
     tone: 'orange',
-    detail: '规则 + 轻量策略网络，以查表为主',
+    detail: '规则引擎与轻量策略网络，以查表运算为主',
     wireless: false,
   },
   {
@@ -82,7 +82,7 @@ export const WIRELESS_MS = latencyBudget.filter((s) => s.wireless).reduce((sum, 
 export const WIRELESS_SHARE = WIRELESS_MS / LATENCY_TOTAL
 export const WIRELESS_COST = LATENCY_TOTAL - LATENCY_WIRED_TOTAL
 
-/** 过力保护走本地 MCU 环路，不经过 BLE —— 安全不能依赖一条可能丢包的无线链路。 */
+/** 过力保护运行于本地 MCU 环路，不经 BLE：安全机制不应依赖存在丢包可能的无线链路。 */
 export const SAFETY_LOOP_MS = 8
 
 export type ParadigmKey = 'active' | 'passive'
@@ -119,18 +119,18 @@ export const paradigmForms: Record<ParadigmKey, {
   active: {
     label: '主动 · 运动想象',
     channels: '运动区 C3 / Cz / C4 / CP3 / CP4（5 通道）',
-    stimulator: '不需要 —— 自发脑电，闭眼也能用',
-    headset: '需覆盖运动皮层，电极更多、对位要求更高',
-    visualChannel: '空出来 —— 可以留给「看着自己的手在动」',
+    stimulator: '无需 · 基于自发脑电，闭眼亦可使用',
+    headset: '需覆盖运动皮层，电极数量较多且对位精度要求较高',
+    visualChannel: '保持空闲，可用于观察患侧肢体的运动',
     calibration: '10 试次（有群体先验）/ 180 试次（冷启动）',
-    note: '视觉反馈是运动康复的核心机制。主动范式不占用视觉通道，这是它在康复里不可替代的理由。',
+    note: '视觉反馈是运动康复的核心机制之一。主动范式不占用视觉通道，因而在康复场景中具有不可替代性。',
   },
   passive: {
     label: '被动 · SSVEP',
     channels: '枕区 O1 / Oz / O2（3 通道）',
-    stimulator: '必须外挂闪烁屏 / LED',
-    headset: '三电极轻头带即可，患者几乎无感',
-    visualChannel: '被刺激器占满 —— 患者必须能视物并维持注视',
+    stimulator: '必需 · 外接闪烁屏或 LED 刺激器',
+    headset: '三电极轻量头带即可，佩戴负担低',
+    visualChannel: '被刺激器占用，患者须具备视觉能力并维持注视',
     calibration: '基本免训练，即戴即用',
     note: '认知负担低、免校准，适合康复早期与重度运动障碍患者作为低负荷备用通道。',
   },

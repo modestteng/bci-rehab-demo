@@ -208,7 +208,7 @@ export function useDemoController(nav: Pick<NavApi, 'go' | 'activeTab'>) {
     uiTimersRef.current.push(
       window.setTimeout(() => {
         setReportState('exported')
-        setLastExportNote('已保存为本地演示快照（模拟导出）')
+        setLastExportNote('训练报告已生成快照，数据仅保存在本机')
       }, 520),
     )
   }

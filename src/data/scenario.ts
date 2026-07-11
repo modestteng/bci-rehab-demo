@@ -28,7 +28,7 @@ export const stageDetails: Record<
   脑电信号模拟: {
     label: '模拟输入 / 仿真验证',
     metric: 'EEG 通道稳定度 93%',
-    helper: '模拟前额叶信号输入，为训练页提供可视波形和状态基线。',
+    helper: '模拟前额叶脑电输入，为后续运动意图识别提供信号基线。',
   },
   运动意图识别: {
     label: '四类意图分类',
@@ -57,7 +57,7 @@ export const stageDetails: Record<
   },
   训练报告生成: {
     label: '训练结果沉淀与建议',
-    metric: '报告完成率 100%',
+    metric: '汇总 8 项训练指标',
     helper: '汇总本次训练结果，输出指标、变化趋势与康复建议。',
   },
 }

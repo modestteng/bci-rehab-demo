@@ -45,8 +45,8 @@ export function WirelessScreen() {
     <div className="mobile-screen wireless-screen">
       <SectionCard
         kicker="延迟预算"
-        title={`${LATENCY_TOTAL}ms 是怎么来的`}
-        description={`首页那个「响应延迟 ${LATENCY_TOTAL}ms ≤ ${LATENCY_LIMIT}ms」不是一个孤立的数字，它由五段构成，每段都有物理出处。`}
+        title="端到端时延预算分解"
+        description={`首页指标「响应延迟 ${LATENCY_TOTAL}ms ≤ ${LATENCY_LIMIT}ms」并非孤立数值，而由五个环节构成，各环节均有明确的物理依据。`}
         aside={<StatusPill tone={total <= LATENCY_LIMIT ? 'success' : 'magenta'}>{total}ms</StatusPill>}
       >
         <OptionGroup label="链路形态" options={LINK_MODES} value={link} onChange={setLink} />
@@ -86,24 +86,24 @@ export function WirelessScreen() {
 
         <div className="inline-note">
           <span>
-            无线化不是免费的：采集打包 + BLE 传输合计 {WIRELESS_MS}ms，占了整个延迟预算的{' '}
-            {(WIRELESS_SHARE * 100).toFixed(1)}%。我们把这个代价拆出来给你看 —— 用 +{WIRELESS_COST}ms 换患者不被线缆束缚，
-            这是一个量化的权衡，不是一句口号。
+            无线化存在明确的时延代价：采集打包与 BLE 传输合计 {WIRELESS_MS}ms，占整个时延预算的{' '}
+            {(WIRELESS_SHARE * 100).toFixed(1)}%。以 +{WIRELESS_COST}ms 的时延换取患者摆脱线缆束缚，
+            是一项可量化的工程权衡。
           </span>
         </div>
 
         <div className="inline-note warn-note">
           <span>
-            <strong>安全环路不走无线。</strong>过力保护运行在本地 MCU 上，环路 {SAFETY_LOOP_MS}ms ——
-            安全不能依赖一条可能丢包的无线链路。
+            <strong>安全环路不经无线链路。</strong>过力保护运行于本地 MCU，环路时延 {SAFETY_LOOP_MS}ms。
+            安全机制不应依赖存在丢包可能的无线链路。
           </span>
         </div>
       </SectionCard>
 
       <SectionCard
         kicker="范式的形式体现"
-        title="范式决定硬件形态"
-        description="「无线采集」和「范式」不是两件事：需要哪些电极、要不要外挂刺激器，是由范式直接决定的。"
+        title="范式与硬件形态的对应关系"
+        description="无线采集与范式并非彼此独立：所需电极位置、是否需要外部刺激器，均由所采用的范式直接决定。"
       >
         <OptionGroup label="范式" options={PARADIGMS} value={paradigm} onChange={setParadigm} />
 
@@ -137,8 +137,8 @@ export function WirelessScreen() {
 
         <div className="inline-note success-note">
           <span>
-            <strong>工程收口：</strong>一顶 8 通道无线头戴同时覆盖两个范式的电极子集 ——
-            切换范式 = 切换通道子集 + 开关刺激器，<strong>不换硬件</strong>。这就是「普适性扩展」在硬件层的落地。
+            <strong>工程实现：</strong>单顶 8 通道无线头戴即可同时覆盖两种范式所需的电极子集。
+            切换范式仅需切换通道子集并启停刺激器，<strong>无需更换硬件</strong>。普适性扩展由此在硬件层得到落地。
           </span>
         </div>
       </SectionCard>
@@ -151,7 +151,7 @@ export function WirelessScreen() {
         <p className="ssvep-note utility-surface">{LATENCY_CAVEAT}</p>
       </CollapseCard>
 
-      <NavCard to="adaptation" title="校准要做几次？" desc="有群体先验 10 次，冷启动 180 次" badge="18×" tone="green" />
+      <NavCard to="adaptation" title="校准试次对比" desc="群体先验 10 次，冷启动 180 次" badge="18×" tone="green" />
     </div>
   )
 }

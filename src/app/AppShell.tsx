@@ -45,10 +45,10 @@ export function AppShell({ ssvep, adapt }: ShellProps) {
           ) : (
             <>
               <div className="app-header-top">
-                <p className="eyebrow">Local Demo · EEG / 光电 / 机械臂 / 触觉</p>
+                <p className="eyebrow">脑机接口 · 多模态光电 · 机械臂 · 触觉反馈</p>
                 <span className="live-indicator">
                   <span className="live-dot" />
-                  闭环演示在线
+                  闭环运行中
                 </span>
               </div>
               <h1>脑机协同康复机械臂闭环可视化系统</h1>

@@ -10,8 +10,8 @@ type ErrorBoundaryState = {
 }
 
 /**
- * 演示现场的兜底：任何子树抛错都只降级该子树，而不是白屏整个应用。
- * 典型触发场景是评委电脑禁用了硬件加速 / WebGL 被驱动黑名单拦截。
+ * 失效安全兜底：任何子树抛错只降级该子树，而不使整个应用白屏。
+ * 典型触发场景为运行设备禁用硬件加速，或 WebGL 被驱动黑名单拦截。
  */
 export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundaryState> {
   state: ErrorBoundaryState = { hasError: false }

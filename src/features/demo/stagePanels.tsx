@@ -20,7 +20,7 @@ export type StagePanelDef = {
    * 折叠后是否保持挂载。
    * 只有「机器人动作响应」为 true —— RobotArm3D 是 []-deps 的常驻 three.js 场景，
    * 反复卸载重挂会不断新建 WebGL context（浏览器上限约 16 个），
-   * 答辩现场反复展开折叠会让 3D 直接变黑。
+   * 反复展开折叠会导致 3D 场景失效变黑。
    */
   keepMounted?: boolean
 }
@@ -181,18 +181,18 @@ function HapticPanel() {
         <div className="force-banner" role="status" aria-live="polite">
           <strong>过力保护已触发</strong>
           <span>
-            力度需求 {Math.round(force.demand * 100)}% 越过硬阈，本地 MCU 在 {SAFETY_LOOP_MS}ms 内削减至{' '}
-            {Math.round(force.applied * 100)}%。该环路不经过无线链路。
+            力度需求 {Math.round(force.demand * 100)}% 超过硬阈值，本地 MCU 于 {SAFETY_LOOP_MS}ms 内将其削减至{' '}
+            {Math.round(force.applied * 100)}%。该安全环路不经无线链路。
           </span>
         </div>
       ) : null}
 
       <button type="button" className="secondary-button" onClick={forceSurged ? handleForceRelease : handleForceSurge}>
-        {forceSurged ? '恢复正常力度' : '模拟加大阻力（触发过力保护）'}
+        {forceSurged ? '恢复正常力度' : '施加超阈力度（触发过力保护）'}
       </button>
 
       <span className="metric-note">
-        端到端延迟 {LATENCY_TOTAL}ms，其中安全环路独立运行于本地，不依赖可能丢包的无线链路。
+        端到端时延 {LATENCY_TOTAL}ms；安全环路独立运行于本地，不依赖存在丢包可能的无线链路。
       </span>
     </div>
   )
@@ -217,7 +217,7 @@ function ReportSummaryPanel() {
           </span>
         ))}
       </div>
-      <NavCard to="adaptation" title="本次反馈已更新个体权重" desc="看它如何收敛到 88.0%" badge="σ 9.2 → 3.1" tone="green" />
+      <NavCard to="adaptation" title="本次反馈已更新个体权重" desc="查看其向 88.0% 收敛的过程" badge="σ 9.2 → 3.1" tone="green" />
     </div>
   )
 }

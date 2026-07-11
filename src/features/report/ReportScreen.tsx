@@ -15,7 +15,7 @@ export function ReportScreen() {
       <SectionCard
         kicker="报告 / 记录"
         title="当前训练会话报告"
-        description="将本次闭环结果压缩成移动端易读的结果卡和建议卡。"
+        description="汇总本次训练的时长、完成次数、精度指标与疲劳变化，并给出下一轮训练建议。"
         aside={<StatusPill tone={REPORT_TONE[reportState]}>{REPORT_LABEL[reportState]}</StatusPill>}
       >
         <div className="report-hero-card surface-hero">
@@ -55,8 +55,8 @@ export function ReportScreen() {
       <NavCard
         to="adaptation"
         title="本次反馈已更新个体权重"
-        desc="单次会话的闭环，接回长期的奖励记忆"
-        badge="为什么是 88%？"
+        desc="单次训练会话的闭环结果，回流至长期奖励记忆"
+        badge="88% 的出处"
         tone="green"
       />
     </div>

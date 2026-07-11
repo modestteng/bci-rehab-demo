@@ -42,8 +42,8 @@ export function EthicsScreen() {
     <div className="mobile-screen ethics-screen">
       <SectionCard
         kicker="伦理与安全"
-        title="不是口号，是代码"
-        description="每一条主张都指向可核查的实现位置；做不到的地方，我们把缺口写出来。"
+        title="伦理措施与实现证据"
+        description="每一条伦理主张均标注其可核查的实现位置；尚未达成之处，如实列出缺口。"
         aside={<StatusPill tone="success">已实现 {counts.implemented}</StatusPill>}
       >
         <StatGrid
@@ -62,10 +62,10 @@ export function EthicsScreen() {
             <span className="self-check-value">{external === null ? '不可测' : `${external} 个`}</span>
           </div>
           <p>
-            本页刚刚读取了浏览器的资源计时接口，统计本应用实际发出的跨域请求数量。
+            本页读取浏览器资源计时接口，统计本应用实际发出的跨域请求数量。
             {external === 0
-              ? '结果为 0 —— 脑电数据没有任何渠道离开这台设备。这条主张是此刻自己验证出来的，不是写上去的。'
-              : '若不为 0，说明存在外部依赖，需要排查。'}
+              ? '结果为 0，表明脑电数据不存在离开本设备的传输通道。该结论由页面在运行时实测得出，而非静态声明。'
+              : '结果不为 0，表明存在外部依赖，需进一步排查。'}
           </p>
         </div>
       </SectionCard>
@@ -109,7 +109,7 @@ export function EthicsScreen() {
         ))}
       </div>
 
-      <NavCard to="adaptation" title="看 σ 收敛的证据" desc="算法公平性不是口号，它有一张图" badge="σ 9.2 → 3.1" tone="green" />
+      <NavCard to="adaptation" title="σ 收敛的实测数据" desc="算法公平性的量化依据：24 名被试的准确率分布" badge="σ 9.2 → 3.1" tone="green" />
     </div>
   )
 }

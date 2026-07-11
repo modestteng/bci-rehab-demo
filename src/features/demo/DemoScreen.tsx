@@ -53,7 +53,7 @@ export function DemoScreen() {
       <SectionCard
         kicker="训练 / 闭环演示"
         title="7 步闭环训练演示"
-        description="自动模式可完整演示，手动模式适合答辩逐步讲解。"
+        description="自动模式连续执行全部七个环节；手动模式逐环节推进，便于核查每一步的输入与输出。"
         aside={<StatusPill tone={reportState === 'generating' ? 'active' : 'cyan'}>进度 {Math.round(progressValue)}%</StatusPill>}
       >
         <OptionGroup label="演示模式" options={MODES} value={demoMode} onChange={setDemoMode} size="lg" />

@@ -48,15 +48,15 @@ export const ethicsItems: readonly EthicsItem[] = [
       { file: 'src/hooks/useSsvepController.ts', symbol: 'flicker 初始值 false' },
       { file: 'src/styles/globals.css', symbol: '@media (prefers-reduced-motion: reduce)' },
     ],
-    action: { label: '去看闪烁开关', to: 'ssvep' },
+    action: { label: '查看闪烁开关的实现', to: 'ssvep' },
   },
   {
     id: 'data-locality',
     title: '数据不出端',
     principle: '脑电是高度敏感的生物特征数据，不应离开使用者的设备。',
     measure:
-      '整个应用零 fetch / XMLHttpRequest / 外部资源引用，加载后完全离线可用。' +
-      '单文件构建产物断网可跑 —— 这一条可以当场 grep 给评委看。',
+      '整个应用不含任何 fetch / XMLHttpRequest 调用与外部资源引用，加载后完全离线可用。' +
+      '单文件构建产物在断网条件下亦可正常运行，该结论可通过全仓检索直接核验。',
     status: 'implemented',
     evidence: [{ file: 'src/', symbol: '全仓 0 处网络请求' }],
   },
@@ -65,19 +65,19 @@ export const ethicsItems: readonly EthicsItem[] = [
     title: '数据最小化',
     principle: '不采集、不留存超出当次训练所需的任何数据。',
     measure:
-      '全仓零 localStorage / sessionStorage / IndexedDB —— 脑电与训练数据从不落盘，刷新即遗忘。' +
-      '报告导出为本地演示快照，不写文件、不上传。',
+      '全仓不含 localStorage / sessionStorage / IndexedDB 调用：脑电与训练数据不写入持久化存储，页面刷新后即不可恢复。' +
+      '训练报告仅在内存中生成，不写入文件系统，不经网络上传。',
     status: 'implemented',
     evidence: [{ file: 'src/', symbol: '全仓 0 处持久化存储' }],
   },
   {
     id: 'reject',
-    title: '不确定就不动',
-    principle: '解码置信度不足时，系统应当拒绝执行，而不是猜一个动作。',
+    title: '低置信度拒识',
+    principle: '解码置信度不足时，系统应拒绝执行，而非输出一个未经确认的动作。',
     measure: 'SSVEP 判决设有拒识阈值 ρ ≥ 0.35，低于阈值判为拒识，不触发任何机械臂动作。',
     status: 'implemented',
     evidence: [{ file: 'src/hooks/useSsvepController.ts', symbol: 'accepted = winnerRho >= rejectThreshold' }],
-    action: { label: '去看拒识判决', to: 'ssvep' },
+    action: { label: '查看拒识判决', to: 'ssvep' },
   },
   {
     id: 'force',
@@ -85,13 +85,13 @@ export const ethicsItems: readonly EthicsItem[] = [
     principle: '机械臂作用于患者肢体，任何情况下都不得超过安全力阈。',
     measure:
       '力度指令经硬阈值钳制：软阈 72%，硬阈 85%，超限即削减并告警。' +
-      '该环路运行在本地 MCU 上（8ms），不经过可能丢包的无线链路。',
+      '该环路运行于本地 MCU（8ms），不经过存在丢包可能的无线链路。',
     status: 'implemented',
     evidence: [
       { file: 'src/data/scenario.ts', symbol: 'applyForceCap / forceLimits' },
       { file: 'src/data/wireless.ts', symbol: 'SAFETY_LOOP_MS = 8' },
     ],
-    action: { label: '当场触发一次', to: 'demo' },
+    action: { label: '触发一次过力保护', to: 'demo' },
   },
   {
     id: 'human-in-loop',
@@ -104,7 +104,7 @@ export const ethicsItems: readonly EthicsItem[] = [
   {
     id: 'explainable',
     title: '决策可解释',
-    principle: '每一次 AI 决策都应能说清依据，而不是一个黑箱输出。',
+    principle: '每一次 AI 决策均应给出可追溯的依据，而非黑箱输出。',
     measure: 'AI 康复决策显式列出四项依据：意图结果、姿态评分、疲劳指数、误操作风险。',
     status: 'implemented',
     evidence: [{ file: 'src/hooks/useDemoController.ts', symbol: 'decisionReasons' }],
@@ -112,22 +112,22 @@ export const ethicsItems: readonly EthicsItem[] = [
   {
     id: 'fairness',
     title: '算法公平性',
-    principle: '同一套系统对不同个体的可用性差异过大，本身就是一种伤害。',
+    principle: '同一系统对不同个体的可用性差异过大，本身即构成一种伤害。',
     measure:
-      '通用模型下跨被试标准差 σ 高达 9.2%：有人几乎完全可用，有人几乎完全不可用。' +
-      '群体先验 + 个体自适应把 σ 压到 3.1%，最差四分位从 66% 提到 84% —— ' +
-      '目的不是让指标好看，是让最差的那个人也能用上。',
+      '通用模型下跨被试标准差 σ 高达 9.2%，个体间可用性差异显著。' +
+      '经群体先验迁移与个体自适应校准，σ 降至 3.1%，最差四分位均值由 66% 提升至 84%。' +
+      '其目的不在于提升平均指标，而在于提升性能最差个体的可用水平。',
     status: 'partial',
     evidence: [{ file: 'src/data/adaptation.ts', symbol: 'summarize / bottomQuartileMean' }],
     gap:
-      '我们不宣称消除了它：即使个体自适应之后，仍有约 1/5 的被试低于 85% 门槛。' +
-      'BCI illiteracy（脑机接口失能）是真实存在的现象，本系统只能缓解，不能消除。',
-    action: { label: '看 σ 收敛的证据', to: 'adaptation' },
+      '本系统缓解而非消除该现象：个体自适应后，仍有约 1/5 的被试低于 85% 门槛。' +
+      'BCI illiteracy（脑机接口失能）是文献中已被反复报道的客观现象。',
+    action: { label: '查看 σ 收敛的实测数据', to: 'adaptation' },
   },
   {
     id: 'failsafe',
     title: '失效安全降级',
-    principle: '任何一个部件失效，都不应让整个系统对使用者不可用。',
+    principle: '任一部件失效，均不应导致整个系统对使用者不可用。',
     measure:
       'WebGL 不可用时 3D 面板降级为静态说明，训练指标不受影响；' +
       '任何子树渲染异常只降级该子树；未启用 JavaScript 时给出明确提示。',
@@ -144,8 +144,8 @@ export const ethicsItems: readonly EthicsItem[] = [
     measure: '所有具风险的交互（闪烁刺激、力度提升）均为显式开启、默认关闭，且随时可中止。',
     status: 'partial',
     gap:
-      '真实临床部署还需要：由治疗师代理的知情同意流程、伦理委员会审查、' +
-      '不良事件上报通道。本演示不具备这些，也不应被当作临床产品使用。',
+      '真实临床部署尚需：由治疗师代理的知情同意流程、伦理委员会审查、' +
+      '不良事件上报通道。本系统当前不具备上述流程，不可作为临床产品使用。',
   },
   {
     id: 'no-overclaim',

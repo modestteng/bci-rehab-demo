@@ -16,7 +16,7 @@ export function SystemScreen() {
 
   return (
     <div className="mobile-screen system-screen">
-      <SectionCard kicker="系统 / 技术" title="技术结构与扩展能力" description="下面三项是本系统的核心能力，点开可进入各自的完整模块。">
+      <SectionCard kicker="系统 / 技术" title="技术结构与扩展能力" description="以下三项为本系统的核心能力模块，可展开查看其完整实现与验证依据。">
         <div className="system-summary-card utility-surface">
           <StatGrid
             variant="chip"
@@ -49,7 +49,7 @@ export function SystemScreen() {
         <NavCard
           to="ethics"
           title="伦理与安全"
-          desc="每条主张都指向可核查的代码，缺口也如实写出"
+          desc="每一条伦理主张均标注可核查的实现位置，缺口如实列出"
           badge={`已实现 ${ethicsCount.implemented} · 部分 ${ethicsCount.partial}`}
           tone="cyan"
         />

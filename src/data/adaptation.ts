@@ -34,7 +34,7 @@ export const conditions: readonly Condition[] = [
     tone: 'magenta',
     mean: 78.0,
     std: 9.2,
-    note: '不做任何个体化，把跨被试通用解码器直接套到新用户身上。',
+    note: '不进行任何个体化，将跨被试通用解码器直接应用于新用户。',
   },
   {
     key: 'prior',
@@ -43,7 +43,7 @@ export const conditions: readonly Condition[] = [
     tone: 'orange',
     mean: 84.0,
     std: 5.6,
-    note: '用 24 名历史被试的群体先验初始化新用户参数 —— 这就是「记忆功能」。',
+    note: '以 24 名历史被试的群体先验初始化新用户参数，即需求书所述的「记忆功能」。',
   },
   {
     key: 'adaptive',
@@ -113,7 +113,7 @@ export function passRate(xs: number[], threshold = ACCURACY_THRESHOLD) {
   return { count, total: xs.length, ratio: count / xs.length }
 }
 
-/** 最差四分位均值 —— 「让最差的那个人也能用上」的量化指标 */
+/** 最差四分位均值：衡量性能最差个体可用水平的量化指标 */
 export function bottomQuartileMean(xs: number[]): number {
   const sorted = [...xs].sort((a, b) => a - b)
   const n = Math.max(1, Math.round(sorted.length * 0.25))
@@ -272,7 +272,7 @@ export function priorWeights(strategies: readonly ComfortStrategy[] = comfortStr
 
 /**
  * 先验的伪计数形式。这是整个模块最关键的一步：
- * 纯 softmax 会让 3.9% 的跳舞在 10 次校准里一次都不被抽中 —— 群体先验会把小众有效策略活活饿死。
+ * 纯 softmax 会使初始权重仅 3.9% 的跳舞在 10 次校准中一次都不被抽中：群体先验将使小众但有效的策略长期得不到探索机会。
  * 把先验实现为伪计数后，跳舞初始 n≈0.59 → UCB 探索奖励极大 → 前几次必被试到。
  * 于是「给予较大权重」和「不饿死小众」由同一行公式同时成立。
  */
@@ -296,19 +296,19 @@ export const personas: readonly Persona[] = [
   {
     key: 'typical',
     label: '常规型',
-    note: '个体响应与群体接近 —— 先验就够用，权重几乎不动。',
+    note: '个体响应与群体分布接近，群体先验即可满足需求，策略权重基本不发生偏移。',
     trueHit: { expression: 0.8, voice: 0.7, posture: 0.53, singing: 0.43, dancing: 0.31 },
   },
   {
     key: 'atypical',
     label: '非典型型',
-    note: '与群体偏好相反。强先验会让表情很顽固，需要约 8 次反例才被推翻 —— 这正是「强先验对非典型个体反应迟钝」的公平性风险。',
+    note: '个体偏好与群体相反。强先验使「表情」策略具有较高惯性，约需 8 次反例方能被推翻，对应「强先验对非典型个体响应迟缓」的公平性风险。',
     trueHit: { expression: 0.3, voice: 0.45, posture: 0.55, singing: 0.8, dancing: 0.85 },
   },
   {
     key: 'fatigued',
     label: '重度疲劳型',
-    note: '只有低唤醒的语音与姿势有效，高唤醒的唱跳反而加重疲劳。',
+    note: '仅低唤醒度的语音与姿势策略有效，高唤醒度的唱歌与跳舞反而加重疲劳。',
     trueHit: { expression: 0.35, voice: 0.78, posture: 0.72, singing: 0.25, dancing: 0.12 },
   },
 ] as const
@@ -357,7 +357,7 @@ export function stepAdaptation(state: AdaptState, persona: Persona, seed: number
 
 export type StrategyWeight = {
   key: ComfortKey
-  /** 群体先验权重（静止的幽灵条） */
+  /** 群体先验权重（图中的浅色基准条） */
   prior: number
   /** 融合后的当前个体权重（实心条） */
   blended: number

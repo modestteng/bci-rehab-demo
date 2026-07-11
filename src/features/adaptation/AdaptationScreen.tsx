@@ -19,7 +19,7 @@ import type { useAdaptationController } from '../../hooks/useAdaptationControlle
 type Props = { adapt: ReturnType<typeof useAdaptationController> }
 
 const TRACE_CHOICES = [
-  { key: 'none' as const, label: '不看个体' },
+  { key: 'none' as const, label: '群体分布' },
   { key: 'worst' as const, label: '最差被试' },
   { key: 'best' as const, label: '最佳被试' },
 ]
@@ -44,8 +44,8 @@ export function AdaptationScreen({ adapt }: Props) {
     <div className="mobile-screen adaptation-screen">
       <SectionCard
         kicker="个体支持性"
-        title="让最差的那个人也能用上"
-        description="通用模型对新用户不仅平均准确率低，而且跨个体方差极大 —— 有人几乎完全可用，有人几乎完全不可用。"
+        title="跨被试性能方差的收敛"
+        description="通用模型对新用户的平均准确率偏低，且跨个体标准差高达 σ 9.2%，导致部分被试的实际可用性显著不足。"
         aside={<StatusPill tone="green">σ ↓{sigmaDrop}%</StatusPill>}
       >
         <DotPlot cohort={cohort} stats={stats} traced={traced} />
@@ -65,8 +65,8 @@ export function AdaptationScreen({ adapt }: Props) {
               {traced.accuracy.adaptive - traced.accuracy.generic >= 0 ? '+' : ''}
               {(traced.accuracy.adaptive - traced.accuracy.generic).toFixed(1)}pp）
               {trace === 'best'
-                ? '。最佳被试反而下降 —— 这是收缩估计的数学必然，我们没有隐藏它。'
-                : '。这就是「减少 std 方差」在一个真实个体身上的意义。'}
+                ? '。最佳被试性能有所回落，这是收缩估计的数学必然，此处如实呈现。'
+                : '。该个体的准确率提升，即跨被试标准差收敛在单一受试者身上的体现。'}
             </span>
           </div>
         ) : null}
@@ -83,8 +83,8 @@ export function AdaptationScreen({ adapt }: Props) {
 
       <SectionCard
         kicker="公平性"
-        title="σ 大就是不公平"
-        description="标准差不是一个统计学摆设。它衡量的是：同一套设备，对不同的人是不是同样可用。"
+        title="性能方差与算法公平性"
+        description="跨被试标准差反映同一系统在不同个体上的可用性差异，是评估算法公平性的直接指标。"
       >
         <StatGrid
           items={[
@@ -96,17 +96,17 @@ export function AdaptationScreen({ adapt }: Props) {
         />
         <div className="inline-note warn-note">
           <span>
-            我们不宣称消除了它：即使个体自适应之后，仍有 {adaptive.pass.total - adaptive.pass.count} / {adaptive.pass.total} 名被试
-            低于 {ACCURACY_THRESHOLD}% 门槛。BCI illiteracy（脑机接口失能）是真实存在的现象，本系统只能缓解，不能消除。
+            本系统缓解而非消除该现象：个体自适应后仍有 {adaptive.pass.total - adaptive.pass.count} / {adaptive.pass.total} 名被试
+            低于 {ACCURACY_THRESHOLD}% 门槛。BCI illiteracy（脑机接口失能）是文献中已被反复报道的客观现象。
           </span>
         </div>
-        <NavCard to="ethics" title="伦理：算法公平性" desc="性能差异本身就是一种伤害" tone="cyan" />
+        <NavCard to="ethics" title="伦理：算法公平性" desc="个体间的性能差异本身即构成一种伤害" tone="cyan" />
       </SectionCard>
 
       <SectionCard
         kicker="记忆功能"
-        title="新用户接入"
-        description="群体先验把校准从冷启动的 180 次压到 10 次 —— 这就是「记忆功能启动」的临床意义。"
+        title="群体先验与个体校准"
+        description="群体先验将校准试次由冷启动的 180 次降至 10 次，此即需求书所述「记忆功能启动」在临床上的直接意义。"
         aside={<StatusPill tone={phase === 'converged' ? 'success' : phase === 'idle' ? 'idle' : 'active'}>{phaseText}</StatusPill>}
       >
         <StatGrid
@@ -118,7 +118,7 @@ export function AdaptationScreen({ adapt }: Props) {
           ]}
         />
         <span className="metric-note">
-          对一个训练 10 分钟疲劳指数就明显上升的卒中患者，24 分钟的纯校准意味着这套系统根本不能用。
+          卒中患者在训练约 10 分钟后疲劳指数即显著上升，24 分钟的纯校准时长在临床上不可接受。
         </span>
 
         <OptionGroup
@@ -157,8 +157,8 @@ export function AdaptationScreen({ adapt }: Props) {
         summary={`${comfortStrategies.length} 种形态`}
       >
         <p className="section-helper">
-          幽灵条 = 群体先验权重（24 名历史被试的累计效果）；实心条 = 当前个体的融合权重。
-          个体从先验上「长出来」的过程是看得见的。
+          浅色基准条为群体先验权重（24 名历史被试的累计效果），实心条为当前个体的融合权重。
+          可直观观察个体权重自群体先验逐步偏移的过程。
         </p>
 
         <div className="rho-list">
@@ -186,17 +186,17 @@ export function AdaptationScreen({ adapt }: Props) {
 
         <div className="inline-note">
           <span>
-            纯 softmax 会让初始权重仅 {(weights[4].prior * 100).toFixed(1)}% 的「律动跳舞」在 10 次校准里一次都不被抽中 ——
-            群体先验会把小众有效策略活活饿死。解法是把先验实现为<strong>伪计数</strong>，再用 UCB 打分：
-            跳舞初始伪计数不足 1，探索奖励极大，前几次必被试到。
-            「给予较大权重」和「不饿死小众」由同一行公式同时成立。
+            若采用纯 softmax，初始权重仅 {(weights[4].prior * 100).toFixed(1)}% 的「律动跳舞」在 10 次校准中可能一次都不被抽中：
+            群体先验将使小众但对特定个体有效的策略长期得不到探索机会。本系统将先验实现为<strong>伪计数</strong>，
+            并以 UCB 准则打分 —— 跳舞的初始伪计数不足 1，探索项极大，因而在早期必然被采样。
+            由此，「给予较大权重」与「保留小众策略的探索机会」在同一组公式下同时成立。
           </span>
         </div>
       </CollapseCard>
 
       <CollapseCard id="adapt-fairness" kicker="日志" title="本次校准的抽样序列" summary={`${state.log.length} 条`}>
         {state.log.length === 0 ? (
-          <p className="section-helper">尚未开始校准。点上方「下一次反馈」或选择一个用户类型接入。</p>
+          <p className="section-helper">尚未开始校准。请先选择接入的用户类型，或点击「下一次反馈」逐次推进。</p>
         ) : (
           <div className="adapt-log">
             {state.log.map((entry) => {

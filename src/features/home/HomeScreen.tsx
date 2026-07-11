@@ -30,7 +30,7 @@ export function HomeScreen() {
     <div className="mobile-screen home-screen">
       <section className="mobile-hero-card surface-hero">
         <span className="panel-tag">七环节康复训练闭环</span>
-        <h2>脑机协同康复训练，一屏完成闭环演示。</h2>
+        <h2>在单一界面内完成从脑电输入到训练报告的完整闭环。</h2>
         <p>脑电模拟 → 意图识别 → 光电校验 → AI 决策 → 机器人响应 → 触觉反馈 → 训练报告。</p>
         <StatGrid
           columns={3}
@@ -59,14 +59,14 @@ export function HomeScreen() {
 
       <CollapseCard id="home-kpi" kicker="比赛指标" title="关键指标" summary="4 项全部达标 · 2 项可下钻">
         <StatGrid variant="metric" items={kpiItems} />
-        <span className="metric-note">带 › 的指标可点开，看它是怎么来的。</span>
+        <span className="metric-note">带 › 的指标可展开，查看其推导依据。</span>
       </CollapseCard>
 
       <div className="nav-card-list">
         <NavCard
           to="adaptation"
           title="个体支持性"
-          desc="群体先验 → 个体自适应，跨被试方差收敛"
+          desc="群体先验迁移与个体自适应校准，实现跨被试性能方差的收敛"
           badge="σ 9.2 → 3.1"
           tone="green"
         />
@@ -77,7 +77,7 @@ export function HomeScreen() {
           badge="8 通道"
           tone="violet"
         />
-        <NavCard to="ethics" title="伦理与安全" desc="每条主张都指向可核查的代码" tone="cyan" />
+        <NavCard to="ethics" title="伦理与安全" desc="每一条伦理主张均标注其可核查的实现位置" tone="cyan" />
       </div>
 
       <CollapseCard id="home-status" kicker="当前会话" title="闭环状态摘要" summary={currentStage ?? '待启动'}>

@@ -247,7 +247,7 @@ export function useSsvepController(active: boolean) {
       return
     }
 
-    // 深链预选的目标在此刻才开始注视 —— 同意门仍然在，只是答辩时少点一次
+    // 深链预选的目标在使用者确认开启后才开始注视：同意门始终有效，仅省去一次点击
     if (gazeIntent) {
       setDecodedIntent(null)
       setProgress(0)

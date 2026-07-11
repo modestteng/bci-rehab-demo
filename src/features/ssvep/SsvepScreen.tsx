@@ -66,7 +66,7 @@ export function SsvepScreen({ ssvep }: Props) {
         </div>
 
         <button type="button" className="inline-link" onClick={() => push('ethics')}>
-          为什么默认关闭？看光敏防护的实现 ›
+          光敏防护措施的实现依据 ›
         </button>
 
         <div className="ssvep-target-grid">
@@ -100,11 +100,11 @@ export function SsvepScreen({ ssvep }: Props) {
         </div>
 
         {flicker ? (
-          <p className="section-helper ssvep-hint">点击目标 = 模拟注视，连续采集 2.0s 后自动解码。</p>
+          <p className="section-helper ssvep-hint">点击目标即模拟注视该刺激，连续采集 2.0s 后自动完成解码。</p>
         ) : (
           <div className="ssvep-consent">
             <p className="section-helper ssvep-hint">
-              未开启闪烁就无法诱发稳态视觉响应——这正是「被动接受刺激」范式的前提。确认无光敏性癫痫风险后再开启。
+              未开启闪烁刺激即无法诱发稳态视觉响应，这是被动接受式范式成立的前提。请在确认无光敏性癫痫风险后开启。
             </p>
             <button type="button" className="primary-button" onClick={handleFlickerToggle}>
               开始闪烁刺激
@@ -235,7 +235,7 @@ export function SsvepScreen({ ssvep }: Props) {
             )
           })}
         </div>
-        <span className="metric-note">虚线为拒识阈值 ρ = {ssvepConfig.rejectThreshold.toFixed(2)}，低于它不触发任何动作。</span>
+        <span className="metric-note">虚线为拒识阈值 ρ = {ssvepConfig.rejectThreshold.toFixed(2)}，低于该阈值不触发任何机械臂动作。</span>
       </SectionCard>
 
       <SectionCard kicker="性能" title="范式性能指标" description="信息传输率按 Wolpaw 公式由目标数、准确率与单次选择耗时计算。">
@@ -251,8 +251,8 @@ export function SsvepScreen({ ssvep }: Props) {
 
       <NavCard
         to="wireless"
-        title="这个范式需要什么硬件？"
-        desc="枕区 3 通道 + 外挂刺激器；主动范式则是运动区 5 通道、无需刺激器"
+        title="本范式所需的硬件形态"
+        desc="枕区 3 通道并外接刺激器；主动范式则需运动区 5 通道，且无需刺激器"
         badge="范式的形式体现"
         tone="violet"
       />
@@ -287,7 +287,7 @@ export function SsvepScreen({ ssvep }: Props) {
           ))}
         </div>
         <button type="button" className="inline-link" onClick={() => push('adaptation')}>
-          校准成本：10 试次 vs 冷启动 180 试次 ›
+          校准成本对比：群体先验 10 试次，冷启动 180 试次 ›
         </button>
       </CollapseCard>
 

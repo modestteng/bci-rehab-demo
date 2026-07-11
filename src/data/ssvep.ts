@@ -49,7 +49,7 @@ export const ssvepPipeline = [
   { step: '信号采集', detail: `枕区 ${['O1', 'Oz', 'O2'].join(' / ')} 三通道，250 Hz 采样` },
   { step: '预处理', detail: '6–40 Hz 带通滤波 + 50 Hz 工频陷波，抑制漂移与电源干扰' },
   { step: '特征解码', detail: 'FBCCA 滤波器组典型相关分析，联合基频与二次谐波' },
-  { step: '判决输出', detail: 'ρ 最大者胜出；最大 ρ < 0.35 时判为拒识，不触发动作' },
+  { step: '判决输出', detail: '取 ρ 最大者为判决结果；当最大 ρ < 0.35 时判为拒识，不触发任何动作' },
 ] as const
 
 export const paradigmComparison = [
@@ -61,7 +61,7 @@ export const paradigmComparison = [
   {
     dimension: '用户负担',
     active: '需主动、持续地进行运动想象',
-    passive: '被动注视闪烁目标，认知负担低',
+    passive: '被动注视闪烁目标，认知负担较低',
   },
   {
     dimension: '训练成本',
@@ -81,9 +81,9 @@ export const paradigmComparison = [
 ] as const
 
 export const ssvepNotes = [
-  '刺激频率受屏幕刷新率约束：60Hz 屏幕上真机部署需取 60/N 或采用频率近似法逼近目标频率。',
-  '枕区 α 节律（≈10Hz）与刺激频段重叠，因此解码依赖 FBCCA 的谐波信息而非单一基频幅值。',
-  '8–15Hz 闪烁落在光敏性癫痫风险频段（3–30Hz），因此本页刺激默认关闭、需显式开启，并采用低对比度亮度调制；系统同时遵循 prefers-reduced-motion。',
+  '刺激频率受屏幕刷新率约束：在 60Hz 屏幕上部署时，需取 60/N 或采用频率近似法逼近目标频率。',
+  '枕区 α 节律（≈10Hz）与刺激频段重叠，故解码依赖 FBCCA 的谐波信息，而非单一基频幅值。',
+  '8–15Hz 闪烁落在光敏性癫痫的风险频段（3–30Hz），故本页刺激默认关闭，须由使用者显式开启，并采用低对比度亮度调制；系统同时遵循 prefers-reduced-motion 设置。',
 ] as const
 
 /** 高斯峰，用于合成功率谱 */

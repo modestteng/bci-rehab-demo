@@ -47,7 +47,7 @@ export const SCREENS: Record<RouteId, ScreenMeta> = {
     id: 'adaptation',
     parent: 'system',
     title: '个体支持性',
-    subtitle: '群体先验 → 个体自适应 → σ 收敛',
+    subtitle: '群体先验迁移 · 个体自适应校准 · 跨被试方差收敛',
     icon: 'adaptation',
   },
   wireless: {
@@ -55,7 +55,7 @@ export const SCREENS: Record<RouteId, ScreenMeta> = {
     id: 'wireless',
     parent: 'system',
     title: '无线采集与范式形态',
-    subtitle: '干电极 · 8 通道 · 176ms 延迟预算',
+    subtitle: '半干电极 · 8 通道 · 端到端时延预算',
     icon: 'wireless',
   },
   ethics: {
@@ -63,7 +63,7 @@ export const SCREENS: Record<RouteId, ScreenMeta> = {
     id: 'ethics',
     parent: 'system',
     title: '伦理与安全',
-    subtitle: '每条主张都指向可核查的代码',
+    subtitle: '伦理措施与可核查的实现证据',
     icon: 'shield',
   },
 }
@@ -85,7 +85,7 @@ function isDetailId(value: unknown): value is DetailId {
 
 /**
  * 解析当前地址。优先读 hash（#/system/ethics），
- * 回落到旧的查询参数深链（?tab=demo&step=3），后者在文档和答辩脚本里已在使用。
+ * 回落到旧的查询参数深链（?tab=demo&step=3），该形式在既有文档中已在使用，需保持向后兼容。
  */
 export function parseLocation(): NavState {
   const hash = window.location.hash.replace(/^#\/?/, '')
