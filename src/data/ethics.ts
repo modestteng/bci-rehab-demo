@@ -56,9 +56,13 @@ export const ethicsItems: readonly EthicsItem[] = [
     principle: '脑电是高度敏感的生物特征数据，不应离开使用者的设备。',
     measure:
       '整个应用不含任何 fetch / XMLHttpRequest 调用与外部资源引用，加载后完全离线可用。' +
-      '单文件构建产物在断网条件下亦可正常运行，该结论可通过全仓检索直接核验。',
+      '训练报告的 Word 文档亦在浏览器内本地生成，不经服务端。' +
+      '单文件构建产物在断网条件下可正常运行并完成导出，该结论可通过全仓检索直接核验。',
     status: 'implemented',
-    evidence: [{ file: 'src/', symbol: '全仓 0 处网络请求' }],
+    evidence: [
+      { file: 'src/', symbol: '全仓 0 处网络请求' },
+      { file: 'src/features/report/exportDocx.ts', symbol: 'downloadReport（浏览器内生成 .docx）' },
+    ],
   },
   {
     id: 'data-minimization',
@@ -66,7 +70,7 @@ export const ethicsItems: readonly EthicsItem[] = [
     principle: '不采集、不留存超出当次训练所需的任何数据。',
     measure:
       '全仓不含 localStorage / sessionStorage / IndexedDB 调用：脑电与训练数据不写入持久化存储，页面刷新后即不可恢复。' +
-      '训练报告仅在内存中生成，不写入文件系统，不经网络上传。',
+      '训练报告在本机内存中生成为 Word 文档，仅在使用者主动点击导出时写入其自选的下载目录，全程不经网络上传。',
     status: 'implemented',
     evidence: [{ file: 'src/', symbol: '全仓 0 处持久化存储' }],
   },

@@ -10,6 +10,7 @@ import {
   type RobotAction,
 } from '../data/scenario'
 import type { NavApi } from './useNavigation'
+import { downloadReport, reportFileName, type ReportInput } from '../features/report/exportDocx'
 import { useTicker } from './useTicker'
 
 export type ReportState = 'idle' | 'generating' | 'ready' | 'exporting' | 'exported'
@@ -205,11 +206,32 @@ export function useDemoController(nav: Pick<NavApi, 'go' | 'activeTab'>) {
     setLastExportNote('')
     setReportState('exporting')
 
+    const input: ReportInput = {
+      intent: selectedIntent,
+      robotAction,
+      duration: profile.report.duration,
+      completedReps: profile.report.completedReps,
+      accuracy: profile.report.accuracy,
+      latency: profile.report.latency,
+      precision: profile.report.precision,
+      gripError: profile.report.gripError,
+      fatigueDelta: profile.report.fatigueDelta,
+      recommendation: profile.report.recommendation,
+      decisionReasons,
+    }
+
     uiTimersRef.current.push(
       window.setTimeout(() => {
-        setReportState('exported')
-        setLastExportNote('训练报告已生成快照，数据仅保存在本机')
-      }, 520),
+        // 在浏览器内生成真正的 .docx 并下载：不经网络，文件仅落到使用者自己的下载目录
+        const ok = downloadReport(input)
+
+        setReportState(ok ? 'exported' : 'ready')
+        setLastExportNote(
+          ok
+            ? `已导出 Word 文档：${reportFileName(input)}`
+            : '当前环境不支持文件下载，请在浏览器中打开本页后重试。',
+        )
+      }, 420),
     )
   }
 
