@@ -12,18 +12,9 @@ export const intents = ['抬手', '伸肘', '握拳', '放松'] as const
 
 export const actionTabs = ['肩部辅助抬升', '肘部屈伸', '手部抓握', '放松恢复'] as const
 
-export const appTabs = [
-  { key: 'home', label: '首页', shortLabel: '概览' },
-  { key: 'demo', label: '训练', shortLabel: '闭环' },
-  { key: 'ssvep', label: '范式', shortLabel: 'SSVEP' },
-  { key: 'report', label: '报告', shortLabel: '记录' },
-  { key: 'system', label: '系统', shortLabel: '技术' },
-] as const
-
 export type Intent = (typeof intents)[number]
 export type Stage = (typeof stages)[number]
 export type RobotAction = (typeof actionTabs)[number]
-export type AppTab = (typeof appTabs)[number]['key']
 export type DemoMode = 'auto' | 'manual'
 
 export const stageDetails: Record<
@@ -297,6 +288,32 @@ export const actionProfiles: Record<
   },
 }
 
+/**
+ * 过力保护。此前它只是 aiPlan 数组里的一个字符串「开启过力保护」，背后零代码 ——
+ * 现在它是真的：力度指令必须经此钳制后才能下发。
+ * 该环路运行在本地 MCU（见 wireless.ts 的 SAFETY_LOOP_MS），不经过可能丢包的无线链路。
+ */
+export const forceLimits = {
+  /** 软阈：超过即削减到此值 */
+  softCap: 0.72,
+  /** 硬阈：绝不允许越过 */
+  hardCap: 0.85,
+  /** 本地环路响应时间 */
+  cutoffMs: 8,
+} as const
+
+export function applyForceCap(demand: number, limits = forceLimits) {
+  const clipped = demand > limits.hardCap
+  const applied = clipped ? limits.softCap : Math.max(0, demand)
+  return {
+    demand,
+    applied,
+    clipped,
+    /** 距硬阈还剩多少余量 */
+    margin: limits.hardCap - applied,
+  }
+}
+
 export const opticalCards = [
   {
     key: 'RGB',
@@ -322,27 +339,6 @@ export const algorithmBadges = [
   'Zero-DCE · 低照度增强',
   'YOLO · 上肢关键区域检测',
   'R(2+1)D-BERT · 动作序列判定',
-] as const
-
-export const extensionCards = [
-  {
-    title: '普适性扩展',
-    description:
-      '支持居家康复、病房辅助、机构训练和桌面机械臂教学四类场景，可替换传感模组与执行终端。',
-    footnote: '技术支撑：模块化感知层 + 统一闭环控制流',
-  },
-  {
-    title: '提升训练依从性的多形态交互安抚',
-    description:
-      '结合表情、语音、姿势、唱歌和跳舞等多种交互形态，在训练疲劳上升时提供情绪安抚与节奏引导。',
-    footnote: '技术支撑：机器人表情模块 + 语音话术 + 姿态动作联动',
-  },
-  {
-    title: '奖励增强与个体自适应记忆',
-    description:
-      '对多人训练中表现稳定的增强策略提升初始权重，为新用户快速建立个体化训练参数。',
-    footnote: '技术支撑：策略记忆权重表 + 本地报告复用机制',
-  },
 ] as const
 
 export const architectureLayers = [

@@ -1,34 +1,27 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import {
-  appTabs,
   stages,
   intentProfiles,
   actionProfiles,
-  type AppTab,
+  applyForceCap,
+  forceLimits,
   type DemoMode,
   type Intent,
   type RobotAction,
 } from '../data/scenario'
+import type { NavApi } from './useNavigation'
+import { useTicker } from './useTicker'
 
 export type ReportState = 'idle' | 'generating' | 'ready' | 'exporting' | 'exported'
 export type SensorKey = 'RGB' | 'NIR' | 'ToF'
-export type ScreenDirection = 'forward' | 'backward'
-
-const tabOrder: AppTab[] = appTabs.map((tab) => tab.key)
-
-function getInitialTab(): AppTab {
-  const param = new URLSearchParams(window.location.search).get('tab')
-  return tabOrder.includes(param as AppTab) ? (param as AppTab) : 'home'
-}
 
 function getInitialStage(): number {
   const param = Number(new URLSearchParams(window.location.search).get('step'))
   return Number.isInteger(param) && param >= 1 && param <= stages.length ? param - 1 : -1
 }
 
-export function useDemoController() {
-  const [activeTab, setActiveTabState] = useState<AppTab>(getInitialTab)
-  const [screenDirection, setScreenDirection] = useState<ScreenDirection>('forward')
+/** 导航不再由本 hook 持有，显式作为依赖传入 —— 它现在只管演示编排。 */
+export function useDemoController(nav: Pick<NavApi, 'go' | 'activeTab'>) {
   const [demoMode, setDemoMode] = useState<DemoMode>('auto')
   const [selectedIntent, setSelectedIntent] = useState<Intent>('握拳')
   const [activeSensor, setActiveSensor] = useState<SensorKey>('RGB')
@@ -37,13 +30,18 @@ export function useDemoController() {
   const [expandedStepIndex, setExpandedStepIndex] = useState<number>(0)
   const [isRunning, setIsRunning] = useState(false)
   const [reportState, setReportState] = useState<ReportState>('idle')
-  const [waveTick, setWaveTick] = useState(0)
   const [lastExportNote, setLastExportNote] = useState('')
-  const [openCards, setOpenCards] = useState<Record<string, boolean>>({})
+  /** 演示用：把力度需求推到硬阈之上，当场触发过力保护 */
+  const [forceDemand, setForceDemand] = useState<number | null>(null)
   const timersRef = useRef<number[]>([])
   const uiTimersRef = useRef<number[]>([])
   const selectedIntentRef = useRef<Intent>(selectedIntent)
   const manualActionRef = useRef<RobotAction | null>(null)
+  const navRef = useRef(nav)
+
+  useEffect(() => {
+    navRef.current = nav
+  })
 
   useEffect(() => {
     selectedIntentRef.current = selectedIntent
@@ -53,13 +51,14 @@ export function useDemoController() {
   const currentStage = activeStageIndex >= 0 ? stages[activeStageIndex] : null
   const progressValue = activeStageIndex >= 0 ? ((activeStageIndex + 1) / stages.length) * 100 : 0
 
-  useEffect(() => {
-    const interval = window.setInterval(() => {
-      setWaveTick((value) => value + 1)
-    }, 180)
+  // EEG 波形只在训练页第 1 步展开时可见；其余时候不必让它每秒触发 5.5 次全树重渲染
+  const waveTick = useTicker(180, nav.activeTab === 'demo' && expandedStepIndex === 0)
 
+  /** 过力保护：真实的钳制，不是一句文案 */
+  const force = applyForceCap(forceDemand ?? profile.haptic.pressure)
+
+  useEffect(() => {
     return () => {
-      window.clearInterval(interval)
       clearTimers(timersRef.current)
       clearTimers(uiTimersRef.current)
     }
@@ -118,19 +117,13 @@ export function useDemoController() {
   ]
 
   const sessionStatus =
-    reportState === 'exporting'
-      ? '报告导出中'
-      : reportState === 'exported'
-        ? '报告已导出（模拟）'
-        : reportState === 'generating'
-          ? '训练报告生成中'
-          : reportState === 'ready'
-            ? '训练报告已生成'
-            : isRunning
-              ? '闭环演示进行中'
-              : currentStage
-                ? `${currentStage} 已就绪`
-                : '等待开始训练'
+    reportState !== 'idle'
+      ? SESSION_STATUS[reportState]
+      : isRunning
+        ? '闭环演示进行中'
+        : currentStage
+          ? `${currentStage} 已就绪`
+          : '等待开始训练'
 
   const reportMetrics = [
     { label: '训练时长', value: profile.report.duration },
@@ -138,13 +131,6 @@ export function useDemoController() {
     { label: '平均响应延迟', value: profile.report.latency },
     { label: '疲劳指数变化', value: profile.report.fatigueDelta },
   ]
-
-  function handleTabChange(nextTab: AppTab) {
-    const currentIndex = tabOrder.indexOf(activeTab)
-    const nextIndex = tabOrder.indexOf(nextTab)
-    setScreenDirection(nextIndex >= currentIndex ? 'forward' : 'backward')
-    setActiveTabState(nextTab)
-  }
 
   function handleStartDemo() {
     clearTimers(timersRef.current)
@@ -157,7 +143,7 @@ export function useDemoController() {
     setIsRunning(demoMode === 'auto')
     setActiveStageIndex(0)
     setExpandedStepIndex(0)
-    handleTabChange('demo')
+    navRef.current.go('demo')
 
     if (demoMode === 'manual') {
       advanceToStage(0)
@@ -199,17 +185,13 @@ export function useDemoController() {
     setLastExportNote('')
   }
 
-  function handleCardToggle(key: string) {
-    setOpenCards((cards) => ({ ...cards, [key]: !cards[key] }))
-  }
-
   function handleGenerateReport() {
     clearTimers(uiTimersRef.current)
     setActiveStageIndex(stages.length - 1)
     setExpandedStepIndex(stages.length - 1)
     setReportState('generating')
     setIsRunning(false)
-    handleTabChange('report')
+    navRef.current.go('report')
 
     uiTimersRef.current.push(
       window.setTimeout(() => {
@@ -279,16 +261,23 @@ export function useDemoController() {
       uiTimersRef.current.push(
         window.setTimeout(() => {
           setReportState('ready')
-          handleTabChange('report')
+          navRef.current.go('report')
         }, 700),
       )
     }
   }
 
+  function handleForceSurge() {
+    // 演示按钮：把力度需求推到硬阈之上，让过力保护当场触发
+    setForceDemand(0.9)
+    setActiveStageIndex((value) => (value < 5 ? 5 : value))
+  }
+
+  function handleForceRelease() {
+    setForceDemand(null)
+  }
+
   return {
-    activeTab,
-    handleTabChange,
-    screenDirection,
     demoMode,
     setDemoMode,
     selectedIntent,
@@ -310,10 +299,13 @@ export function useDemoController() {
     decisionReasons,
     sessionStatus,
     reportMetrics,
+    force,
+    forceLimits,
+    forceSurged: forceDemand !== null,
+    handleForceSurge,
+    handleForceRelease,
     handleStartDemo,
     handleReset,
-    openCards,
-    handleCardToggle,
     handleIntentSelect,
     handleSensorSelect,
     handleActionSelect,
@@ -322,6 +314,14 @@ export function useDemoController() {
     handleManualNext,
     handleStepExpand,
   }
+}
+
+const SESSION_STATUS: Record<ReportState, string> = {
+  idle: '等待开始训练',
+  generating: '训练报告生成中',
+  ready: '训练报告已生成',
+  exporting: '报告导出中',
+  exported: '报告已导出（模拟）',
 }
 
 export function createWaveformPoints(intent: Intent, tick: number) {

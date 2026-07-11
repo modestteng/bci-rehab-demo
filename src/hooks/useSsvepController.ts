@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import type { Intent } from '../data/scenario'
+import { useTicker } from './useTicker'
 import {
   SPECTRUM_END,
   SPECTRUM_START,
@@ -120,33 +121,25 @@ export function wolpawItr(targets: number, accuracy: number, secondsPerSelection
   return (bits * 60) / secondsPerSelection
 }
 
-/** 深链 ?gaze=握拳 用于答辩时直达解码结果 */
+/** 深链 ?gaze=握拳：只预选目标，不代替使用者同意开启闪烁 */
 function getInitialGaze(): Intent | null {
   const param = new URLSearchParams(window.location.search).get('gaze')
   return ssvepTargets.find((target) => target.intent === param)?.intent ?? null
 }
 
 export function useSsvepController(active: boolean) {
-  // 8–15Hz 闪烁位于光敏性癫痫风险频段，默认关闭，须用户显式开启（?gaze= 深链视为已确认）
-  const [flicker, setFlicker] = useState(() => Boolean(getInitialGaze()))
-  const [phase, setPhase] = useState<SsvepPhase>(() => (getInitialGaze() ? 'stimulating' : 'idle'))
+  // 8–15Hz 闪烁位于光敏性癫痫风险频段，一律默认关闭。
+  // 深链不能绕过这道门 —— 一个可转发的链接不得让接收者在毫无预警下暴露于闪烁刺激。
+  const [flicker, setFlicker] = useState(false)
+  const [phase, setPhase] = useState<SsvepPhase>('idle')
   const [gazeIntent, setGazeIntent] = useState<Intent | null>(getInitialGaze)
   const [decodedIntent, setDecodedIntent] = useState<Intent | null>(null)
   const [progress, setProgress] = useState(0)
   const [selections, setSelections] = useState(0)
   const [runId, setRunId] = useState(0)
-  const [tick, setTick] = useState(0)
   const startRef = useRef(0)
 
-  useEffect(() => {
-    if (!active) {
-      return
-    }
-    const interval = window.setInterval(() => {
-      setTick((value) => value + 1)
-    }, 120)
-    return () => window.clearInterval(interval)
-  }, [active])
+  const tick = useTicker(120, active)
 
   useEffect(() => {
     if (phase !== 'stimulating') {
@@ -246,11 +239,20 @@ export function useSsvepController(active: boolean) {
   function handleFlickerToggle() {
     const next = !flicker
     setFlicker(next)
+
     if (!next) {
       setPhase('idle')
-      setGazeIntent(null)
       setDecodedIntent(null)
       setProgress(0)
+      return
+    }
+
+    // 深链预选的目标在此刻才开始注视 —— 同意门仍然在，只是答辩时少点一次
+    if (gazeIntent) {
+      setDecodedIntent(null)
+      setProgress(0)
+      setRunId((value) => value + 1)
+      setPhase('stimulating')
     }
   }
 
