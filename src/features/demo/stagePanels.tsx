@@ -108,16 +108,16 @@ function DecisionPanel() {
         ))}
       </div>
 
-      {/* 疲劳指数在此驱动决策，而使用者并未发出任何指令 —— 这按定义就是被动式范式 */}
+      {/* 疲劳指数驱动决策而使用者不发出指令，按定义即为被动式范式 */}
       <div className="inline-note">
         <span>
           本步骤中的<strong>疲劳指数 {profile.fatigue.toFixed(2)}</strong> 直接参与训练强度与力度上限的调整，
-          而使用者并未为此发出任何指令。按 Zander &amp; Kothe 的分类，这正是一个<strong>被动式（passive）范式</strong>：
-          系统读取使用者的状态，而非接收其指令。本系统的主动式、反应式、被动式三种范式在此汇合。
+          使用者不为此发出任何指令。按 Zander &amp; Kothe 的三分法，此即<strong>被动式（passive）范式</strong>：
+          系统读取使用者状态，而非接收其指令。至此，本系统的主动式、反应式与被动式三种范式在本步骤汇合。
         </span>
       </div>
       <button type="button" className="inline-link" onClick={() => push('acquisition')}>
-        范式三分与「主动 / 被动」的两个含义 ›
+        范式三分与「主动 / 被动」的两个维度 ›
       </button>
     </div>
   )

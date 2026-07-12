@@ -9,8 +9,8 @@ import type { Tone } from '../design/tokens'
  * 而康复场景里视觉通道往往必须留给「看着自己的手在动」这件事本身）。
  * 一顶 8 通道无线头戴同时覆盖两个范式的电极子集 —— 切范式 = 切通道子集，不换硬件。
  *
- * 注意本文件的 ParadigmKey 是「范式轴」（解码什么脑活动），
- * 与 data/acquisition.ts 的「采集形态轴」（要不要佩戴脑电帽）彼此正交，切勿混为一谈。
+ * 本文件的 ParadigmKey 属「范式维度」（解码何种脑活动），
+ * 与 data/acquisition.ts 的「采集形态维度」（被试需佩戴何种设备）彼此正交，分别建模。
  */
 
 export type LatencySegment = {

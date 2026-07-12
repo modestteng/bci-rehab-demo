@@ -62,8 +62,8 @@ export const SCREENS: Record<RouteId, ScreenMeta> = {
     kind: 'detail',
     id: 'acquisition',
     parent: 'system',
-    title: '主动与被动的两个轴',
-    subtitle: '范式三分 · 免佩戴采集成熟度 · 多模态替代',
+    title: '范式与采集形态',
+    subtitle: '范式三分 · 采集形态成熟度阶梯 · 多模态替代通道',
     icon: 'acquisition',
   },
   ethics: {

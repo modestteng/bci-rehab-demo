@@ -287,7 +287,7 @@ export function SsvepScreen({ ssvep }: Props) {
           ))}
         </div>
         <button type="button" className="inline-link" onClick={() => push('acquisition')}>
-          还有第三种范式：被动式 · 状态监测 ›
+          范式三分：本系统另实现被动式状态监测 ›
         </button>
         <button type="button" className="inline-link" onClick={() => push('adaptation')}>
           校准成本对比：群体先验 10 试次，冷启动 180 试次 ›

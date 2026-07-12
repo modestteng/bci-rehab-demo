@@ -24,7 +24,7 @@ export type EthicsItem = {
   measure: string
   status: EthicsStatus
   evidence?: EthicsEvidence[]
-  /** 诚实的缺口。partial / planned 必填。 */
+  /** 待完善事项与推进要求。partial / planned 必填。 */
   gap?: string
   action?: { label: string; to: RouteId }
 }
@@ -150,10 +150,11 @@ export const ethicsItems: readonly EthicsItem[] = [
       '一旦转向免佩戴的摄像头、麦克风与非接触电极，这一仪式随之消失，使用者可能在无察觉的情况下被持续读取状态。' +
       '故本系统规定：免佩戴通道必须由使用者显式开启，采集状态常驻可见，且可随时一键关闭，不得默认启用。',
     status: 'partial',
-    evidence: [{ file: 'src/data/acquisition.ts', symbol: 'modalities（各通道的接触性与失效条件）' }],
+    evidence: [{ file: 'src/data/acquisition.ts', symbol: 'modalities（各通道的接触性与适用边界）' }],
     gap:
-      '本系统当前为演示实现，未实际接入摄像头与麦克风。真实部署尚需：硬件级的采集指示（在采信号不可由软件关闭）、' +
-      '原始音视频仅在本地处理且不留存、以及针对认知障碍患者由治疗师代理同意的流程。',
+      '当前实现覆盖策略层与边界界定。免佩戴通道的硬件工程化按以下要求推进：' +
+      '设置硬件级采集指示（在采信号不可由软件关闭）、原始音视频仅在本地处理且不予留存、' +
+      '并为认知障碍患者建立由治疗师代理的知情同意流程。',
     action: { label: '查看免佩戴采集的技术边界', to: 'acquisition' },
   },
   {

@@ -53,11 +53,11 @@ export const ssvepPipeline = [
 ] as const
 
 /**
- * 主动式 vs 反应式的对比。
+ * 主动式与反应式范式的对比。
  *
- * 注意这里的第二列是「反应式（reactive）」而非「被动式（passive）」：
- * SSVEP 的使用者仍在有意识地选择注视哪个目标，只是借外部刺激作为意图载体。
- * 真正的被动式范式指系统读取使用者状态而使用者并未发出指令 —— 见 data/acquisition.ts 的范式三分。
+ * 第二列为「反应式（reactive）」：SSVEP 的使用者有意识地选择注视目标，
+ * 外部刺激仅作为意图的载体。被动式（passive）范式指系统读取使用者状态而使用者不发出指令，
+ * 本系统由疲劳指数驱动的训练强度自适应即属此类 —— 范式三分见 data/acquisition.ts。
  */
 export const paradigmComparison = [
   {
