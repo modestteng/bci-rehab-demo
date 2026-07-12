@@ -1,7 +1,7 @@
 import type { IconName } from '../components/ui/Icon'
 
 export const TAB_IDS = ['home', 'demo', 'ssvep', 'report', 'system'] as const
-export const DETAIL_IDS = ['adaptation', 'wireless', 'ethics'] as const
+export const DETAIL_IDS = ['adaptation', 'wireless', 'acquisition', 'ethics'] as const
 
 export type TabId = (typeof TAB_IDS)[number]
 export type DetailId = (typeof DETAIL_IDS)[number]
@@ -57,6 +57,14 @@ export const SCREENS: Record<RouteId, ScreenMeta> = {
     title: '无线采集与范式形态',
     subtitle: '半干电极 · 8 通道 · 端到端时延预算',
     icon: 'wireless',
+  },
+  acquisition: {
+    kind: 'detail',
+    id: 'acquisition',
+    parent: 'system',
+    title: '主动与被动的两个轴',
+    subtitle: '范式三分 · 免佩戴采集成熟度 · 多模态替代',
+    icon: 'acquisition',
   },
   ethics: {
     kind: 'detail',

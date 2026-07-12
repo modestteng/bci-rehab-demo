@@ -142,6 +142,21 @@ export const ethicsItems: readonly EthicsItem[] = [
     ],
   },
   {
+    id: 'contactless-consent',
+    title: '无感采集与知情同意',
+    principle: '采集越无感，知情同意越容易被架空。',
+    measure:
+      '佩戴脑电帽这一动作本身即构成一次显式同意：使用者清楚地知道采集何时开始、何时结束。' +
+      '一旦转向免佩戴的摄像头、麦克风与非接触电极，这一仪式随之消失，使用者可能在无察觉的情况下被持续读取状态。' +
+      '故本系统规定：免佩戴通道必须由使用者显式开启，采集状态常驻可见，且可随时一键关闭，不得默认启用。',
+    status: 'partial',
+    evidence: [{ file: 'src/data/acquisition.ts', symbol: 'modalities（各通道的接触性与失效条件）' }],
+    gap:
+      '本系统当前为演示实现，未实际接入摄像头与麦克风。真实部署尚需：硬件级的采集指示（在采信号不可由软件关闭）、' +
+      '原始音视频仅在本地处理且不留存、以及针对认知障碍患者由治疗师代理同意的流程。',
+    action: { label: '查看免佩戴采集的技术边界', to: 'acquisition' },
+  },
+  {
     id: 'vulnerable',
     title: '脆弱人群保护',
     principle: '卒中、失语、认知障碍患者难以完整表达同意，需要更高的保护标准。',

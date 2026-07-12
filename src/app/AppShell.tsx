@@ -13,6 +13,7 @@ import { ReportScreen } from '../features/report/ReportScreen'
 import { SystemScreen } from '../features/system/SystemScreen'
 import { AdaptationScreen } from '../features/adaptation/AdaptationScreen'
 import { WirelessScreen } from '../features/wireless/WirelessScreen'
+import { AcquisitionScreen } from '../features/acquisition/AcquisitionScreen'
 import { EthicsScreen } from '../features/ethics/EthicsScreen'
 
 type ShellProps = {
@@ -74,6 +75,7 @@ export function AppShell({ ssvep, adapt }: ShellProps) {
             {routeId === 'system' && <SystemScreen />}
             {routeId === 'adaptation' && <AdaptationScreen adapt={adapt} />}
             {routeId === 'wireless' && <WirelessScreen />}
+            {routeId === 'acquisition' && <AcquisitionScreen />}
             {routeId === 'ethics' && <EthicsScreen />}
           </div>
         </div>

@@ -42,9 +42,9 @@ export function SsvepScreen({ ssvep }: Props) {
   return (
     <div className="mobile-screen ssvep-screen">
       <SectionCard
-        kicker="范式 / 被动接受"
+        kicker="范式 / 反应式"
         title="SSVEP 稳态视觉诱发范式"
-        description="被动接受式脑机接口：无需运动想象，注视闪烁目标即可解码意图。"
+        description="反应式脑机接口：无需运动想象，注视闪烁目标即可解码意图。使用者仍在有意识地选择注视对象，故属反应式而非被动式。"
         aside={<StatusPill tone={statusTone}>{phaseText}</StatusPill>}
       >
         <div className="ssvep-safety-row utility-surface">
@@ -104,7 +104,7 @@ export function SsvepScreen({ ssvep }: Props) {
         ) : (
           <div className="ssvep-consent">
             <p className="section-helper ssvep-hint">
-              未开启闪烁刺激即无法诱发稳态视觉响应，这是被动接受式范式成立的前提。请在确认无光敏性癫痫风险后开启。
+              未开启闪烁刺激即无法诱发稳态视觉响应，这是反应式范式成立的前提。请在确认无光敏性癫痫风险后开启。
             </p>
             <button type="button" className="primary-button" onClick={handleFlickerToggle}>
               开始闪烁刺激
@@ -271,21 +271,24 @@ export function SsvepScreen({ ssvep }: Props) {
         </div>
       </CollapseCard>
 
-      <CollapseCard id="ssvep-compare" kicker="对比" title="主动型 vs 被动型范式" summary="混合 BCI 互补">
+      <CollapseCard id="ssvep-compare" kicker="对比" title="主动式 vs 反应式范式" summary="混合 BCI 互补">
         <div className="compare-table">
           <div className="compare-head">
             <span />
-            <span className="compare-tag active-tag">主动 · 运动想象</span>
-            <span className="compare-tag passive-tag">被动 · SSVEP</span>
+            <span className="compare-tag active-tag">主动式 · 运动想象</span>
+            <span className="compare-tag reactive-tag">反应式 · SSVEP</span>
           </div>
           {paradigmComparison.map((row) => (
             <div key={row.dimension} className="compare-row utility-surface">
               <span className="compare-dimension">{row.dimension}</span>
               <span className="compare-cell">{row.active}</span>
-              <span className="compare-cell passive">{row.passive}</span>
+              <span className="compare-cell reactive">{row.reactive}</span>
             </div>
           ))}
         </div>
+        <button type="button" className="inline-link" onClick={() => push('acquisition')}>
+          还有第三种范式：被动式 · 状态监测 ›
+        </button>
         <button type="button" className="inline-link" onClick={() => push('adaptation')}>
           校准成本对比：群体先验 10 试次，冷启动 180 试次 ›
         </button>

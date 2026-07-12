@@ -1,6 +1,7 @@
 import { algorithmBadges, architectureLayers, opticalCards } from '../../data/scenario'
 import { buildCohort, summarize } from '../../data/adaptation'
 import { LATENCY_TOTAL, WIRELESS_SHARE, latencyBudget } from '../../data/wireless'
+import { acquisitionTiers, capFreeSupportingActive } from '../../data/acquisition'
 import { countByStatus } from '../../data/ethics'
 import { CollapseCard, NavCard, SectionCard } from '../../components/ui/Card'
 import { Badge } from '../../components/ui/Pill'
@@ -38,6 +39,13 @@ export function SystemScreen() {
           desc={`群体先验 → 个体自适应，跨被试标准差 ${stats.generic.std.toFixed(1)}% → ${stats.adaptive.std.toFixed(1)}%`}
           badge={`σ ↓${Math.round((1 - stats.adaptive.std / stats.generic.std) * 100)}%`}
           tone="green"
+        />
+        <NavCard
+          to="acquisition"
+          title="主动与被动的两个轴"
+          desc={`范式三分本系统 3/3 已实现；免佩戴形态中，能支撑主动式控制的已上市方案为 ${capFreeSupportingActive.length} 种`}
+          badge={`${acquisitionTiers.length} 级形态`}
+          tone="orange"
         />
         <NavCard
           to="wireless"

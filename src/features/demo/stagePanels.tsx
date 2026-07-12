@@ -12,6 +12,7 @@ import { RobotArm3D, RobotArmFallback } from '../../components/RobotArm3D'
 import { NavCard } from '../../components/ui/Card'
 import { OptionGroup } from '../../components/ui/Pill'
 import { FeedbackTile, Meter, StatGrid } from '../../components/ui/Stat'
+import { useNav } from '../../hooks/useNavigation'
 import { useDemo } from './DemoContext'
 
 export type StagePanelDef = {
@@ -87,6 +88,7 @@ function OpticalPanel() {
 
 function DecisionPanel() {
   const { selectedIntent, profile } = useDemo()
+  const { push } = useNav()
   return (
     <div className="step-detail-block">
       <StatGrid
@@ -105,6 +107,18 @@ function DecisionPanel() {
           </div>
         ))}
       </div>
+
+      {/* 疲劳指数在此驱动决策，而使用者并未发出任何指令 —— 这按定义就是被动式范式 */}
+      <div className="inline-note">
+        <span>
+          本步骤中的<strong>疲劳指数 {profile.fatigue.toFixed(2)}</strong> 直接参与训练强度与力度上限的调整，
+          而使用者并未为此发出任何指令。按 Zander &amp; Kothe 的分类，这正是一个<strong>被动式（passive）范式</strong>：
+          系统读取使用者的状态，而非接收其指令。本系统的主动式、反应式、被动式三种范式在此汇合。
+        </span>
+      </div>
+      <button type="button" className="inline-link" onClick={() => push('acquisition')}>
+        范式三分与「主动 / 被动」的两个含义 ›
+      </button>
     </div>
   )
 }

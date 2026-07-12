@@ -3,11 +3,14 @@ import type { Tone } from '../design/tokens'
 /**
  * 无线采集与范式的硬件形态。
  *
- * 核心主张：「范式的形式体现」= 范式决定硬件形态。
- * 被动 SSVEP 只需枕区 3 通道但必须外挂刺激器（占满视觉通道）；
- * 主动 MI 需要运动区 5 通道但不需要任何刺激器（视觉通道空出来，
+ * 核心主张：「范式的形式体现」= 范式决定电极位置。
+ * 反应式 SSVEP 只需枕区 3 通道但必须外挂刺激器（占满视觉通道）；
+ * 主动式 MI 需要运动区 5 通道但不需要任何刺激器（视觉通道空出来，
  * 而康复场景里视觉通道往往必须留给「看着自己的手在动」这件事本身）。
  * 一顶 8 通道无线头戴同时覆盖两个范式的电极子集 —— 切范式 = 切通道子集，不换硬件。
+ *
+ * 注意本文件的 ParadigmKey 是「范式轴」（解码什么脑活动），
+ * 与 data/acquisition.ts 的「采集形态轴」（要不要佩戴脑电帽）彼此正交，切勿混为一谈。
  */
 
 export type LatencySegment = {
@@ -85,7 +88,8 @@ export const WIRELESS_COST = LATENCY_TOTAL - LATENCY_WIRED_TOTAL
 /** 过力保护运行于本地 MCU 环路，不经 BLE：安全机制不应依赖存在丢包可能的无线链路。 */
 export const SAFETY_LOOP_MS = 8
 
-export type ParadigmKey = 'active' | 'passive'
+/** 范式轴：解码何种脑活动。与「是否佩戴脑电帽」无关，见 data/acquisition.ts。 */
+export type ParadigmKey = 'active' | 'reactive'
 
 export type Electrode = {
   id: string
@@ -102,9 +106,9 @@ export const electrodes: readonly Electrode[] = [
   { id: 'C4', x: 0.35, y: 0, paradigm: 'active', region: '运动区' },
   { id: 'CP3', x: -0.36, y: 0.22, paradigm: 'active', region: '运动区' },
   { id: 'CP4', x: 0.36, y: 0.22, paradigm: 'active', region: '运动区' },
-  { id: 'O1', x: -0.28, y: 0.78, paradigm: 'passive', region: '枕区' },
-  { id: 'Oz', x: 0, y: 0.82, paradigm: 'passive', region: '枕区' },
-  { id: 'O2', x: 0.28, y: 0.78, paradigm: 'passive', region: '枕区' },
+  { id: 'O1', x: -0.28, y: 0.78, paradigm: 'reactive', region: '枕区' },
+  { id: 'Oz', x: 0, y: 0.82, paradigm: 'reactive', region: '枕区' },
+  { id: 'O2', x: 0.28, y: 0.78, paradigm: 'reactive', region: '枕区' },
 ] as const
 
 export const paradigmForms: Record<ParadigmKey, {
@@ -117,16 +121,16 @@ export const paradigmForms: Record<ParadigmKey, {
   note: string
 }> = {
   active: {
-    label: '主动 · 运动想象',
+    label: '主动式 · 运动想象',
     channels: '运动区 C3 / Cz / C4 / CP3 / CP4（5 通道）',
     stimulator: '无需 · 基于自发脑电，闭眼亦可使用',
     headset: '需覆盖运动皮层，电极数量较多且对位精度要求较高',
     visualChannel: '保持空闲，可用于观察患侧肢体的运动',
     calibration: '10 试次（有群体先验）/ 180 试次（冷启动）',
-    note: '视觉反馈是运动康复的核心机制之一。主动范式不占用视觉通道，因而在康复场景中具有不可替代性。',
+    note: '视觉反馈是运动康复的核心机制之一。主动式范式不占用视觉通道，因而在康复场景中具有不可替代性。',
   },
-  passive: {
-    label: '被动 · SSVEP',
+  reactive: {
+    label: '反应式 · SSVEP',
     channels: '枕区 O1 / Oz / O2（3 通道）',
     stimulator: '必需 · 外接闪烁屏或 LED 刺激器',
     headset: '三电极轻量头带即可，佩戴负担低',
@@ -153,5 +157,5 @@ export const wirelessSpecs = [
  * SSVEP 的 2.5s 是「单次选择耗时」（含 2.0s 刺激累积）。两者量纲不同，不可直接比较。
  */
 export const LATENCY_CAVEAT =
-  '本页的 176ms 是主动范式（运动想象）的响应延迟：从意图起始到机械臂启动。' +
+  '本页的 176ms 是主动式范式（运动想象）的响应延迟：从意图起始到机械臂启动。' +
   'SSVEP 页的 2.5s 是单次选择耗时（含 2.0s 刺激累积），两者量纲不同，不可直接比较。'

@@ -22,8 +22,8 @@ import { OptionGroup, StatusPill } from '../../components/ui/Pill'
 import { StatGrid } from '../../components/ui/Stat'
 
 const PARADIGMS = [
-  { key: 'active' as const, label: '主动 · 运动想象' },
-  { key: 'passive' as const, label: '被动 · SSVEP' },
+  { key: 'active' as const, label: '主动式 · 运动想象' },
+  { key: 'reactive' as const, label: '反应式 · SSVEP' },
 ]
 
 const LINK_MODES = [

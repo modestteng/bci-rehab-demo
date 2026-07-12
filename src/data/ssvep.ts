@@ -52,35 +52,48 @@ export const ssvepPipeline = [
   { step: '判决输出', detail: '取 ρ 最大者为判决结果；当最大 ρ < 0.35 时判为拒识，不触发任何动作' },
 ] as const
 
+/**
+ * 主动式 vs 反应式的对比。
+ *
+ * 注意这里的第二列是「反应式（reactive）」而非「被动式（passive）」：
+ * SSVEP 的使用者仍在有意识地选择注视哪个目标，只是借外部刺激作为意图载体。
+ * 真正的被动式范式指系统读取使用者状态而使用者并未发出指令 —— 见 data/acquisition.ts 的范式三分。
+ */
 export const paradigmComparison = [
   {
     dimension: '信号来源',
     active: '自发脑电 · 运动皮层 μ / β 节律 ERD',
-    passive: '诱发脑电 · 枕区稳态视觉响应',
+    reactive: '诱发脑电 · 枕区稳态视觉响应',
   },
   {
-    dimension: '用户负担',
-    active: '需主动、持续地进行运动想象',
-    passive: '被动注视闪烁目标，认知负担较低',
+    dimension: '意图表达',
+    active: '自发产生控制信号，全程无需外部刺激',
+    reactive: '有意识地注视特定刺激以发出指令',
+  },
+  {
+    dimension: '认知负担',
+    active: '需持续进行运动想象，负担较高',
+    reactive: '仅需维持注视，负担较低',
   },
   {
     dimension: '训练成本',
     active: '需个体化训练与逐人校准',
-    passive: '基本免训练，即戴即用',
+    reactive: '基本免训练，即戴即用',
   },
   {
     dimension: '适用人群',
     active: '保有残余运动想象能力者',
-    passive: '重度运动障碍、康复早期患者',
+    reactive: '重度运动障碍、康复早期患者',
   },
   {
     dimension: '典型指标',
     active: '准确率 88.0% · 响应延迟 176ms',
-    passive: '准确率 95.0% · ITR 39.2 bits/min',
+    reactive: '准确率 95.0% · ITR 39.2 bits/min',
   },
 ] as const
 
 export const ssvepNotes = [
+  'SSVEP 属于反应式（reactive）范式，而非被动式（passive）。使用者仍在有意识地选择注视目标，只是借助外部刺激作为意图的载体；被动式范式指系统读取使用者的状态（疲劳、负荷、注意力）而使用者并未发出任何指令。分类依据：Zander & Kothe, J. Neural Eng. 8(2), 2011。',
   '刺激频率受屏幕刷新率约束：在 60Hz 屏幕上部署时，需取 60/N 或采用频率近似法逼近目标频率。',
   '枕区 α 节律（≈10Hz）与刺激频段重叠，故解码依赖 FBCCA 的谐波信息，而非单一基频幅值。',
   '8–15Hz 闪烁落在光敏性癫痫的风险频段（3–30Hz），故本页刺激默认关闭，须由使用者显式开启，并采用低对比度亮度调制；系统同时遵循 prefers-reduced-motion 设置。',

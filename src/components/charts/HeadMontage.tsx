@@ -6,7 +6,7 @@ const R = 64
 
 /**
  * 头部电极蒙太奇（10-20 系统的二维投影）。
- * 切换主动/被动，对应通道子集发光 —— 一秒讲清「范式决定硬件形态」。
+ * 切换主动式 / 反应式范式，对应通道子集发光 —— 一秒讲清「范式决定电极位置」。
  */
 export function HeadMontage({ paradigm }: { paradigm: ParadigmKey }) {
   return (

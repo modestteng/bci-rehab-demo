@@ -115,6 +115,23 @@ const ICONS = {
       <path d="M6.6 3.2a7.6 7.6 0 0 1 6.8 0" fill="none" stroke={p.stroke} strokeWidth="1.5" strokeLinecap="round" />
     </>
   ),
+  /** 采集形态：头部不戴任何东西，感知来自外围 */
+  acquisition: (p: Paint) => (
+    <>
+      <circle cx="10" cy="10" r="4.2" fill={p.fill} stroke={p.stroke} strokeWidth="1.8" />
+      <circle cx="10" cy="2.6" r="1.3" fill={p.stroke} />
+      <circle cx="16.4" cy="13.4" r="1.3" fill={p.stroke} />
+      <circle cx="3.6" cy="13.4" r="1.3" fill={p.stroke} />
+      <path
+        d="M10 4.4V4M14.6 12.4l.4-.2M5.4 12.4l-.4-.2"
+        fill="none"
+        stroke={p.stroke}
+        strokeWidth="1.4"
+        strokeLinecap="round"
+        strokeDasharray="1.6 1.6"
+      />
+    </>
+  ),
   /** 伦理：盾牌 + 勾 */
   shield: (p: Paint) => (
     <>

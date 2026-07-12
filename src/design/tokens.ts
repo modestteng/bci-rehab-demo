@@ -23,4 +23,8 @@ export type CardKey =
   | 'adapt-fairness'
   | 'wireless-specs'
   | 'wireless-paradigm'
+  | 'acq-paradigms'
+  | 'acq-tiers'
+  | 'acq-matrix'
+  | 'acq-paradox'
   | 'ethics-notes'
